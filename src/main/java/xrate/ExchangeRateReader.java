@@ -2,6 +2,8 @@ package xrate;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 /**
  * Provide access to basic currency exchange rate services.
  */
@@ -34,6 +36,9 @@ public class ExchangeRateReader {
         // environment variable.
         // You don't have to change this call.
         readAccessKey();
+
+        String base = baseURL;
+
     }
 
     /**
@@ -86,8 +91,7 @@ public class ExchangeRateReader {
 
         // TODO Your code here
 
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        return getExchangeRate(currencyCode, "EUR", year, month, day);
     }
 
     /**
@@ -115,6 +119,10 @@ public class ExchangeRateReader {
          */
         
         // TODO Your code here
+
+        JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
+
+        
 
         // Remove the next line when you've implemented this method.
         throw new UnsupportedOperationException();
