@@ -122,7 +122,9 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
-        String targetURL = buildURL
+        throw new UnsupportedOperationException();
+
+        //String targetURL = buildURL
 
         JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
 
@@ -131,7 +133,7 @@ public class ExchangeRateReader {
         if(processedRequest.getBoolean("success")){
             return processedRequest.getJSONObject("info").getInt("rate");
         } else {
-            throw new IOException();
+            throw new IOException(processedRequest.getJSONObject("error").getString("info"));
         }
 
         // Remove the next line when you've implemented this method.
