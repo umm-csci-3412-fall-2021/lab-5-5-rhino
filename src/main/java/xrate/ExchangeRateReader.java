@@ -11,6 +11,7 @@ import org.json.JSONObject;
 public class ExchangeRateReader {
 
     private String accessKey;
+    private String baseURL;
 
     /**
      * Construct an exchange rate reader using the given base URL. All requests will
@@ -38,7 +39,7 @@ public class ExchangeRateReader {
         // You don't have to change this call.
         readAccessKey();
 
-        String base = baseURL;
+        this.baseURL = baseURL;
 
     }
 
@@ -121,6 +122,8 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
+        String targetURL = buildURL
+
         JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
 
         JSONObject processedRequest = submitRequest(request);
@@ -135,15 +138,23 @@ public class ExchangeRateReader {
         // throw new UnsupportedOperationException();
     }
 
-    private JSONObject buildRequest(String fromCurrency, String toCurrency, String year, String month, String day){
-        String timeString = year + "-" + month + "-" + day;
-        
+    private JSONObject buildRequest(String fromCurrency, String toCurrency, int year, int month, int day){
+        String timeString = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
+
         JSONObject output = new JSONObject()
             .put("access_key", accessKey)
             .put("from", fromCurrency)
             .put("to", toCurrency)
             .put("amount", 1)
             .put("date", timeString);
+        return output;
+    }
+
+    private String paddedNumConversion(int i){
+        String output = Integer.toString(i);
+        if (output.length() == 1){
+            output = "0" + output;
+        }
         return output;
     }
 }
