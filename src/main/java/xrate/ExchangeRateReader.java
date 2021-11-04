@@ -1,6 +1,7 @@
 package xrate;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import org.json.JSONObject;
 
@@ -132,5 +133,17 @@ public class ExchangeRateReader {
 
         // Remove the next line when you've implemented this method.
         // throw new UnsupportedOperationException();
+    }
+
+    private JSONObject buildRequest(String fromCurrency, String toCurrency, String year, String month, String day){
+        String timeString = year + "-" + month + "-" + day;
+        
+        JSONObject output = new JSONObject()
+            .put("access_key", accessKey)
+            .put("from", fromCurrency)
+            .put("to", toCurrency)
+            .put("amount", 1)
+            .put("date", timeString);
+        return output;
     }
 }
