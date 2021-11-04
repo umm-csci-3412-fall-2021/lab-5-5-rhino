@@ -122,9 +122,15 @@ public class ExchangeRateReader {
 
         JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
 
-        
+        JSONObject processedRequest = submitRequest(request);
+
+        if(processedRequest.getBoolean("success")){
+            return processedRequest.getJSONObject("info").getInt("rate");
+        } else {
+            throw new IOException();
+        }
 
         // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        // throw new UnsupportedOperationException();
     }
 }
