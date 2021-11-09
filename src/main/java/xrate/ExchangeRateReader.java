@@ -1,9 +1,11 @@
 package xrate;
 
-import java.io.IOException;
-import java.util.Calendar;
+import java.io.*;
+import java.util.*;
+import java.net.URL;
+import java.net.MalformedURLException;
 
-import org.json.JSONObject;
+import org.json.*;
 
 /**
  * Provide access to basic currency exchange rate services.
@@ -72,7 +74,7 @@ public class ExchangeRateReader {
      * @return the desired exchange rate
      * @throws IOException if there are problems reading from the server
      */
-    public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
+    public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException, MalformedURLException {
         /*
          * Here you should:
          * 
@@ -109,7 +111,7 @@ public class ExchangeRateReader {
      * @throws IOException if there are problems reading from the server
      */
     public float getExchangeRate(String fromCurrency, String toCurrency, int year, int month, int day)
-            throws IOException {
+            throws IOException, MalformedURLException {
         /*
          * This is similar to the previous method except that you have to get
          * the two currency rates and divide one by the other to get their
@@ -122,7 +124,7 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
 
         URL targetURL = buildURL(fromCurrency, toCurrency, year, month, day);
 
@@ -131,17 +133,19 @@ public class ExchangeRateReader {
         JSONObject processedRequest = submitRequest(targetURL);
 
         if(processedRequest.getBoolean("success")){
-            return processedRequest.getJSONObject("info").getInt("rate");
+            return processedRequest.getJSONObject("rates").getFloat(fromCurrency);
         } else {
-            throw new IOException(processedRequest.getJSONObject("error").getString("info"));
+            throw new IOException(processedRequest.toString()); // .getJSONObject("error").getString("info"));
         }
+
+
 
         // Remove the next line when you've implemented this method.
         // throw new UnsupportedOperationException();
     }
 
-    private URL buildURL(String fromCurrency, String toCurrency, int year, int month, int day){
-        String urlRepresentation =  "http://data.fixer.io/api/";
+    private URL buildURL(String fromCurrency, String toCurrency, int year, int month, int day) throws MalformedURLException {
+        String urlRepresentation =  baseURL;
         urlRepresentation = urlRepresentation + dateNumsToTimeString(year, month, day);
         urlRepresentation = urlRepresentation + "?access_key=" + accessKey;
         urlRepresentation = urlRepresentation + "&base=" + toCurrency;
