@@ -150,6 +150,15 @@ public class ExchangeRateReader {
         return output;
     }
 
+    private JSONObject submitRequest(URL targetURL) throws IOException{
+        InputStream urlStream = targetURL.openStream();
+        JSONTokener tokener = new JSONTokener(urlStream);
+        JSONObject output = new JSONObject(tokener);
+        urlStream.close();
+        
+        return output;
+    }
+
     private String dateNumsToTimeString(int year, int month, int day){
         String output = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
         return output;
