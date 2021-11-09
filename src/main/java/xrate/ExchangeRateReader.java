@@ -124,11 +124,11 @@ public class ExchangeRateReader {
 
         throw new UnsupportedOperationException();
 
-        //String targetURL = buildURL
+        URL targetURL = buildURL(fromCurrency, toCurrency, year, month, day);
 
-        JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
+        // JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
 
-        JSONObject processedRequest = submitRequest(request);
+        JSONObject processedRequest = submitRequest(targetURL);
 
         if(processedRequest.getBoolean("success")){
             return processedRequest.getJSONObject("info").getInt("rate");
@@ -140,6 +140,22 @@ public class ExchangeRateReader {
         // throw new UnsupportedOperationException();
     }
 
+    private URL buildURL(String fromCurrency, String toCurrency, int year, int month, int day){
+        String urlRepresentation =  "http://data.fixer.io/api/";
+        urlRepresentation = urlRepresentation + dateNumsToTimeString(year, month, day);
+        urlRepresentation = urlRepresentation + "?access_key=" + accessKey;
+        urlRepresentation = urlRepresentation + "&base=" + toCurrency;
+        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency;
+        URL output = new URL(urlRepresentation);
+        return output;
+    }
+
+    private String dateNumsToTimeString(int year, int month, int day){
+        String output = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
+        return output;
+    }
+
+    /**
     private JSONObject buildRequest(String fromCurrency, String toCurrency, int year, int month, int day){
         String timeString = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
 
@@ -151,6 +167,7 @@ public class ExchangeRateReader {
             .put("date", timeString);
         return output;
     }
+    */
 
     private String paddedNumConversion(int i){
         String output = Integer.toString(i);
