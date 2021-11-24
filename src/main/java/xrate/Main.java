@@ -24,8 +24,13 @@ public class Main {
         System.out.print("Enter the desired currency code: ");
         Scanner scanner = new Scanner(System.in);
         String currencyCode = scanner.nextLine();
+        System.out.print("\nEnter the currency to use as base, or leave blank to use EUR:");
+        String baseCode = scanner.nextLine();
+        if(baseCode.isBlank()){
+            baseCode = "EUR";
+        }
         scanner.close();
 
-        System.out.println(exchangeRateReader.getExchangeRate(currencyCode, 2010, 6, 25));
+        System.out.println(exchangeRateReader.getExchangeRate(currencyCode, baseCode, 2010, 6, 25));
     }
 }

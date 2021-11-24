@@ -1,6 +1,11 @@
 package xrate;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
+import java.net.URL;
+import java.net.MalformedURLException;
+
+import org.json.*;
 
 /**
  * Provide access to basic currency exchange rate services.
@@ -8,6 +13,7 @@ import java.io.IOException;
 public class ExchangeRateReader {
 
     private String accessKey;
+    private String baseURL;
 
     /**
      * Construct an exchange rate reader using the given base URL. All requests will
@@ -34,6 +40,9 @@ public class ExchangeRateReader {
         // environment variable.
         // You don't have to change this call.
         readAccessKey();
+
+        this.baseURL = baseURL;
+
     }
 
     /**
@@ -65,7 +74,7 @@ public class ExchangeRateReader {
      * @return the desired exchange rate
      * @throws IOException if there are problems reading from the server
      */
-    public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
+    public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException, MalformedURLException {
         /*
          * Here you should:
          * 
@@ -86,8 +95,7 @@ public class ExchangeRateReader {
 
         // TODO Your code here
 
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        return getExchangeRate(currencyCode, "EUR", year, month, day);
     }
 
     /**
@@ -103,7 +111,7 @@ public class ExchangeRateReader {
      * @throws IOException if there are problems reading from the server
      */
     public float getExchangeRate(String fromCurrency, String toCurrency, int year, int month, int day)
-            throws IOException {
+            throws IOException, MalformedURLException {
         /*
          * This is similar to the previous method except that you have to get
          * the two currency rates and divide one by the other to get their
@@ -116,7 +124,69 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
+        //throw new UnsupportedOperationException();
+
+        URL targetURL = buildURL(fromCurrency, toCurrency, year, month, day);
+
+        // JSONObject request = buildRequest(fromCurrency, toCurrency, year, month, day);
+
+        JSONObject processedRequest = submitRequest(targetURL);
+
+        if(processedRequest.getBoolean("success")){
+            return (processedRequest.getJSONObject("rates").getFloat(fromCurrency))/(processedRequest.getJSONObject("rates").getFloat(toCurrency));
+        } else {
+            throw new IOException(processedRequest.toString()); // .getJSONObject("error").getString("info"));
+        }
+
+
+
         // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        // throw new UnsupportedOperationException();
+    }
+
+    private URL buildURL(String fromCurrency, String toCurrency, int year, int month, int day) throws MalformedURLException {
+        String urlRepresentation =  baseURL;
+        urlRepresentation = urlRepresentation + dateNumsToTimeString(year, month, day);
+        urlRepresentation = urlRepresentation + "?access_key=" + accessKey;
+        //urlRepresentation = urlRepresentation + "&base=" + toCurrency;
+        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency + "," + toCurrency;
+        URL output = new URL(urlRepresentation);
+        return output;
+    }
+
+    private JSONObject submitRequest(URL targetURL) throws IOException{
+        InputStream urlStream = targetURL.openStream();
+        JSONTokener tokener = new JSONTokener(urlStream);
+        JSONObject output = new JSONObject(tokener);
+        urlStream.close();
+        
+        return output;
+    }
+
+    private String dateNumsToTimeString(int year, int month, int day){
+        String output = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
+        return output;
+    }
+
+    /**
+    private JSONObject buildRequest(String fromCurrency, String toCurrency, int year, int month, int day){
+        String timeString = "" + year + "-" + paddedNumConversion(month) + "-" + paddedNumConversion(day);
+
+        JSONObject output = new JSONObject()
+            .put("access_key", accessKey)
+            .put("from", fromCurrency)
+            .put("to", toCurrency)
+            .put("amount", 1)
+            .put("date", timeString);
+        return output;
+    }
+    */
+
+    private String paddedNumConversion(int i){
+        String output = Integer.toString(i);
+        if (output.length() == 1){
+            output = "0" + output;
+        }
+        return output;
     }
 }
