@@ -31,6 +31,6 @@ public class Main {
         }
         scanner.close();
 
-        System.out.println(exchangeRateReader.getExchangeRate(currencyCode, "EUR", 2010, 6, 25));
+        System.out.println(exchangeRateReader.getExchangeRate(currencyCode, baseCode, 2010, 6, 25));
     }
 }
