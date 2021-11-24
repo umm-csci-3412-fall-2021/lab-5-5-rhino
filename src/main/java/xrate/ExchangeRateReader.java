@@ -133,7 +133,7 @@ public class ExchangeRateReader {
         JSONObject processedRequest = submitRequest(targetURL);
 
         if(processedRequest.getBoolean("success")){
-            return processedRequest.getJSONObject("rates").getFloat(fromCurrency);
+            return (processedRequest.getJSONObject("rates").getFloat(fromCurrency))/(processedRequest.getJSONObject("rates").getFloat(toCurrency));
         } else {
             throw new IOException(processedRequest.toString()); // .getJSONObject("error").getString("info"));
         }
@@ -148,8 +148,8 @@ public class ExchangeRateReader {
         String urlRepresentation =  baseURL;
         urlRepresentation = urlRepresentation + dateNumsToTimeString(year, month, day);
         urlRepresentation = urlRepresentation + "?access_key=" + accessKey;
-        urlRepresentation = urlRepresentation + "&base=" + toCurrency;
-        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency + ",";
+        //urlRepresentation = urlRepresentation + "&base=" + toCurrency;
+        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency + "," + toCurrency;
         URL output = new URL(urlRepresentation);
         return output;
     }
