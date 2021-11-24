@@ -149,7 +149,7 @@ public class ExchangeRateReader {
         urlRepresentation = urlRepresentation + dateNumsToTimeString(year, month, day);
         urlRepresentation = urlRepresentation + "?access_key=" + accessKey;
         urlRepresentation = urlRepresentation + "&base=" + toCurrency;
-        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency;
+        urlRepresentation = urlRepresentation + "&symbols=" + fromCurrency + ",";
         URL output = new URL(urlRepresentation);
         return output;
     }
